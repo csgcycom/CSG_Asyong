@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Cybersecurity IQ Test – 3 Levels</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0b0e1a 0%, #1a1f2f 50%, #0d1b2a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+            color: #e0e6f0;
+        }
+
+        .container {
+            background: rgba(18, 24, 38, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 170, 0.15);
+            border-radius: 2rem;
+            padding: 2.5rem 2rem;
+            max-width: 780px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(0, 255, 170, 0.04);
+        }
+
+        header { text-align: center; margin-bottom: 1.5rem; }
+        header .shield { font-size: 2.6rem; display: block; margin-bottom: 0.3rem; }
+        header h1 {
+            font-size: 1.7rem; font-weight: 700;
+            background: linear-gradient(135deg, #00ffaa, #00ccff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        header p { color: #8892b0; font-size: 0.9rem; margin-top: 0.2rem; }
+
+        /* Registration */
+        .register-screen { text-align: center; padding: 0.5rem 0; }
+        .register-screen h2 { font-size: 1.25rem; margin-bottom: 0.4rem; color: #00ffaa; }
+        .register-screen p { color: #8892b0; font-size: 0.9rem; margin-bottom: 1.3rem; }
+        .register-input-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
+        .register-input-wrap input {
+            width: 100%; max-width: 380px; padding: 0.85rem 1.2rem;
+            border-radius: 10px; border: 1.5px solid #2a3349;
+            background: #1a2135; color: #e0e6f0; font-size: 1rem; outline: none;
+            transition: border-color 0.2s;
+        }
+        .register-input-wrap input:focus { border-color: #00ffaa; }
+        .register-input-wrap input::placeholder { color: #5a6a8a; }
+        .btn-start {
+            padding: 0.75rem 3rem; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #00ffaa, #00ccff);
+            color: #0b0e1a; font-weight: 700; font-size: 1rem; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(0,255,170,0.3); }
+        .register-error { color: #ff4466; font-size: 0.85rem; min-height: 1.3rem; }
+
+        /* Level header */
+        .level-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .level-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.4rem 1rem; border-radius: 9999px;
+            font-size: 0.85rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .level-badge.l1 { background: rgba(0,255,170,0.12); color: #00ffaa; border: 1px solid rgba(0,255,170,0.3); }
+        .level-badge.l2 { background: rgba(0,204,255,0.12); color: #00ccff; border: 1px solid rgba(0,204,255,0.3); }
+        .level-badge.l3 { background: rgba(255,170,0,0.12); color: #ffaa00; border: 1px solid rgba(255,170,0,0.3); }
+        .level-score-badge { font-size: 0.8rem; color: #8892b0; }
+
+        /* Progress */
+        .progress-wrap { background: #1e2538; border-radius: 9999px; height: 5px; margin-bottom: 0.3rem; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00ffaa, #00ccff); border-radius: 9999px; transition: width 0.5s; }
+        .progress-label { text-align: right; font-size: 0.75rem; color: #5a6a8a; margin-bottom: 1.2rem; }
+
+        /* Question */
+        .question-area { min-height: 260px; }
+        .q-number { font-size: 0.75rem; color: #00ffaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem; }
+        .q-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 1.3rem; line-height: 1.5; }
+
+        /* Options */
+        .options { display: flex; flex-direction: column; gap: 0.7rem; }
+        .option {
+            background: #1a2135; border: 1.5px solid #2a3349; border-radius: 12px;
+            padding: 0.85rem 1.1rem; cursor: pointer; transition: all 0.2s;
+            font-size: 0.92rem; display: flex; align-items: center; gap: 0.7rem;
+        }
+        .option:hover:not(.disabled) { border-color: #00ffaa; background: #1f2840; transform: translateX(4px); }
+        .option .letter {
+            width: 26px; height: 26px; border-radius: 50%; background: #262f47;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700; color: #8892b0; flex-shrink: 0;
+        }
+        .option.selected { border-color: #00ffaa; background: rgba(0,255,170,0.08); }
+        .option.selected .letter { background: #00ffaa; color: #0b0e1a; }
+        .option.correct { border-color: #00cc88; background: rgba(0,204,136,0.12); }
+        .option.correct .letter { background: #00cc88; color: #0b0e1a; }
+        .option.wrong { border-color: #ff4466; background: rgba(255,68,102,0.12); }
+        .option.wrong .letter { background: #ff4466; color: #fff; }
+        .option.disabled { cursor: default; opacity: 0.7; }
+        .option.disabled:hover { transform: none; border-color: #2a3349; }
+
+        /* Feedback */
+        .feedback { margin-top: 1rem; padding: 0.7rem 1.1rem; border-radius: 10px; font-size: 0.88rem; display: none; }
+        .feedback.show { display: block; }
+        .feedback.correct { background: rgba(0,204,136,0.1); border-left: 3px solid #00cc88; color: #aaffdd; }
+        .feedback.wrong { background: rgba(255,68,102,0.1); border-left: 3px solid #ff4466; color: #ffbbcc; }
+
+        /* Next */
+        .btn-next {
+            margin-top: 1.3rem; padding: 0.75rem 2.5rem; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #00ffaa, #00ccff);
+            color: #0b0e1a; font-weight: 700; font-size: 1rem; cursor: pointer;
+            transition: all 0.2s; display: none;
+        }
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(0,255,170,0.3); }
+        .btn-next.show { display: inline-block; }
+
+        /* Level complete */
+        .level-complete { text-align: center; padding: 1.5rem 0; display: none; }
+        .level-complete.show { display: block; }
+        .question-area.hide { display: none; }
+        .level-complete h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+        .level-complete .lc-score { font-size: 2rem; font-weight: 800; margin: 0.5rem 0; }
+        .level-complete .lc-score.pass { color: #00ffaa; }
+        .level-complete .lc-score.fail { color: #ff4466; }
+        .level-complete .lc-msg { color: #8892b0; font-size: 0.95rem; margin-bottom: 1.2rem; }
+        .btn-level-next {
+            padding: 0.7rem 2.5rem; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #00ffaa, #00ccff);
+            color: #0b0e1a; font-weight: 700; font-size: 1rem; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-level-next:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(0,255,170,0.3); }
+
+        /* Results */
+        .results { text-align: center; display: none; }
+        .results.show { display: block; }
+        .score-circle {
+            width: 130px; height: 130px; border-radius: 50%; margin: 1.2rem auto;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; font-weight: 800;
+            border: 4px solid #ff4466; color: #ff4466;
+        }
+        .score-circle.pass { border-color: #00ffaa; color: #00ffaa; }
+        .result-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; }
+        .result-sub { color: #8892b0; margin-bottom: 0.4rem; }
+        .result-detail { color: #5a6a8a; font-size: 0.88rem; margin-bottom: 1.8rem; }
+
+        /* Certificate */
+        .certificate {
+            margin: 1.8rem auto 0; max-width: 560px;
+            background: linear-gradient(135deg, #f5f0e8, #e8e0d0);
+            border-radius: 16px; padding: 2rem 2rem 1.6rem;
+            color: #1a1a2e; box-shadow: 0 10px 40px rgba(0,255,170,0.15);
+            position: relative; overflow: hidden; display: none;
+        }
+        .certificate.show { display: block; }
+        .certificate::before {
+            content: ''; position: absolute; inset: 0;
+            border: 3px solid #c9a84c; border-radius: 14px; pointer-events: none;
+        }
+        .certificate-badge { font-size: 2rem; margin-bottom: 0.2rem; }
+        .cert-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; color: #8a7a5a; }
+        .cert-name { font-family: 'Georgia', serif; font-size: 1.5rem; font-weight: 700; margin: 0.4rem 0 0.2rem; color: #1a1a2e; }
+        .cert-msg { font-size: 0.9rem; color: #5a4a3a; margin-bottom: 0.8rem; line-height: 1.5; }
+        .cert-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: #7a6a5a; border-top: 1px solid #d0c0a0; padding-top: 0.7rem; margin-top: 0.3rem; }
+        .cert-footer strong { color: #3a3a1a; }
+        .btn-cert {
+            margin-top: 1rem; padding: 0.65rem 2rem; border: none; border-radius: 10px;
+            background: #c9a84c; color: #1a1a2e; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-cert:hover { background: #d4b85a; transform: translateY(-2px); }
+
+        .btn-back-register {
+            margin-top: 1.2rem; padding: 0.65rem 2rem;
+            border: 1.5px solid #2a3349; border-radius: 10px;
+            background: transparent; color: #8892b0; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-back-register:hover { border-color: #00ffaa; color: #00ffaa; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease forwards; }
+
+        @media (max-width: 500px) {
+            .container { padding: 1.5rem 1.2rem; }
+            header h1 { font-size: 1.3rem; }
+            .q-text { font-size: 1.05rem; }
+            .option { padding: 0.7rem 0.9rem; font-size: 0.88rem; }
+            .score-circle { width: 110px; height: 110px; font-size: 2.2rem; }
+            .cert-name { font-size: 1.2rem; }
+            .register-input-wrap input { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+
+    <header>
+        <span class="shield">🛡️</span>
+        <h1>Cybersecurity IQ Test</h1>
+        <p>3 levels · 10 questions each · Prove your skills to earn the certificate</p>
+    </header>
+
+    <!-- ─── REGISTRATION ─── -->
+    <div class="register-screen" id="registerScreen">
+        <h2>📝 Register Before You Begin</h2>
+        <p>Enter your name so it appears on your certificate (if you pass all 3 levels).</p>
+        <div class="register-input-wrap">
+            <input type="text" id="nameInput" placeholder="e.g. Alex Rivera" maxlength="60" autocomplete="name" />
+            <div class="register-error" id="registerError"></div>
+            <button class="btn-start" id="btnStart">Start Test →</button>
+        </div>
+    </div>
+
+    <!-- ─── QUIZ AREA ─── -->
+    <div class="quiz-area" id="quizArea" style="display:none;">
+
+        <div class="level-header">
+            <span class="level-badge l1" id="levelBadge">● Level 1 · Beginner</span>
+            <span class="level-score-badge" id="levelScoreBadge">Score: 0 / 10</span>
+        </div>
+
+        <div class="progress-wrap">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-label" id="progressLabel">0 / 10</div>
+
+        <div class="question-area" id="questionArea">
+            <div class="q-number" id="qNumber">QUESTION 1</div>
+            <div class="q-text fade-in" id="qText">Loading…</div>
+            <div class="options" id="optionsContainer"></div>
+            <div class="feedback" id="feedback"></div>
+            <button class="btn-next" id="btnNext">Next Question →</button>
+        </div>
+
+        <div class="level-complete" id="levelComplete">
+            <div id="lcIcon">🎯</div>
+            <h3 id="lcTitle">Level Complete!</h3>
+            <div class="lc-score" id="lcScore">0/10</div>
+            <div class="lc-msg" id="lcMsg">Great job!</div>
+            <button class="btn-level-next" id="btnLevelNext">Proceed →</button>
+        </div>
+    </div>
+
+    <!-- ─── FINAL RESULTS ─── -->
+    <div class="results" id="resultsArea">
+        <div class="score-circle" id="scoreCircle">0%</div>
+        <div class="result-title" id="resultTitle">Your Result</div>
+        <div class="result-sub" id="resultSub">Overall Score</div>
+        <div class="result-detail" id="resultDetail">Complete all 3 levels to earn the certificate.</div>
+
+        <div class="certificate" id="certificate">
+            <div class="certificate-badge">🏆</div>
+            <div class="cert-title">Certificate of Achievement</div>
+            <div class="cert-name" id="certName">——</div>
+            <div class="cert-msg">
+                This certifies that you have demonstrated cybersecurity knowledge across all 3 levels,
+                scoring <strong id="certScore">—</strong> overall on the Cybersecurity IQ Test.
+            </div>
+            <div class="cert-footer">
+                <span>Issued: <strong id="certDate">—</strong></span>
+                <span>🛡️ CYCOM,AFP</span>
+            </div>
+            <button class="btn-cert" id="btnDownloadCert">⬇ Download Certificate</button>
+        </div>
+
+        <button class="btn-back-register" id="btnBackRegister">← Back to Registration</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        "use strict";
+
+        const TOTAL_QS_PER_LEVEL = 10;
+        const PASS_THRESHOLD_PER_LEVEL = 6;  // 6/10 to pass a level
+
+        const LEVELS = [
+            // ─── LEVEL 1 · BEGINNER ───────────────────────────
+            {
+                name: 'Level 1 · Beginner',
+                badgeClass: 'l1',
+                passThreshold: PASS_THRESHOLD_PER_LEVEL,
+                questions: [
+                    {
+                        q: "What does the acronym XSS stand for?",
+                        opts: ["Cross-Site Scripting", "Extreme Security Standard", "XML Signature Syntax", "Cross-System Scan"],
+                        correct: 0,
+                        explain: "Cross-Site Scripting (XSS) is a web vulnerability that allows attackers to inject malicious scripts."
+                    },
+                    {
+                        q: "Which port is commonly used for HTTPS traffic?",
+                        opts: ["80", "443", "8080", "22"],
+                        correct: 1,
+                        explain: "HTTPS uses port 443 by default. HTTP uses 80, SSH uses 22."
+                    },
+                    {
+                        q: "What is the primary purpose of a firewall?",
+                        opts: ["Scan for viruses", "Monitor traffic & block unauthorized access", "Encrypt all outgoing data", "Manage passwords"],
+                        correct: 1,
+                        explain: "A firewall monitors and controls network traffic based on security rules."
+                    },
+                    {
+                        q: "Which of the following is a strong password practice?",
+                        opts: ["Using your pet's name", "A 16-char random mix of letters, numbers & symbols", "Reusing the same password everywhere", "Using 'Password123!'"],
+                        correct: 1,
+                        explain: "Long, random, unique passwords resist brute-force and dictionary attacks."
+                    },
+                    {
+                        q: "What does 'phishing' refer to?",
+                        opts: ["Fishing for network vulnerabilities", "A social-engineering attack to steal credentials", "Scanning open ports", "Encrypting files for ransom"],
+                        correct: 1,
+                        explain: "Phishing tricks users into revealing sensitive information via deceptive messages."
+                    },
+                    {
+                        q: "What is the CIA triad in cybersecurity?",
+                        opts: ["Confidentiality, Integrity, Availability", "Code, Injection, Authentication", "Control, Identity, Access", "Cryptography, IA, Audit"],
+                        correct: 0,
+                        explain: "The CIA triad — Confidentiality, Integrity, Availability — is the foundation of information security."
+                    },
+                    {
+                        q: "What type of malware locks files and demands payment?",
+                        opts: ["Trojan", "Worm", "Ransomware", "Spyware"],
+                        correct: 2,
+                        explain: "Ransomware encrypts victim files and demands a ransom for decryption."
+                    },
+                    {
+                        q: "Which of these is an example of multi-factor authentication?",
+                        opts: ["Password only", "Password + SMS code", "Username only", "PIN only"],
+                        correct: 1,
+                        explain: "MFA combines two or more factors (e.g., something you know + something you have)."
+                    },
+                    {
+                        q: "What is a VPN primarily used for?",
+                        opts: ["Blocking ads", "Encrypting internet traffic and hiding IP address", "Speeding up Wi-Fi", "Scanning for viruses"],
+                        correct: 1,
+                        explain: "A Virtual Private Network encrypts traffic and masks your IP address for privacy."
+                    },
+                    {
+                        q: "What should you do if you receive a suspicious email with an attachment from an unknown sender?",
+                        opts: ["Open it to check what it is", "Forward it to all contacts", "Delete it and report it to IT/security", "Reply asking who sent it"],
+                        correct: 2,
+                        explain: "Never open suspicious attachments. Delete and report to your security team immediately."
+                    }
+                ]
+            },
+            // ─── LEVEL 2 · INTERMEDIATE ───────────────────────
+            {
+                name: 'Level 2 · Intermediate',
+                badgeClass: 'l2',
+                passThreshold: PASS_THRESHOLD_PER_LEVEL,
+                questions: [
+                    {
+                        q: "What is a DDoS attack?",
+                        opts: ["Direct Download of Software", "Distributed Denial of Service", "Dynamic DNS Override", "Data Disclosure of Secrets"],
+                        correct: 1,
+                        explain: "A DDoS floods a target with traffic from multiple sources to cause service disruption."
+                    },
+                    {
+                        q: "What does 'least privilege' mean?",
+                        opts: ["Users get minimum permissions needed", "Only admins can access the network", "Everyone has equal rights", "Privileges revoke after hours"],
+                        correct: 0,
+                        explain: "Least privilege grants only the permissions necessary to perform a task."
+                    },
+                    {
+                        q: "Which protocol secures data in transit on the web?",
+                        opts: ["SSL/TLS", "AES", "SHA-256", "RSA"],
+                        correct: 0,
+                        explain: "SSL/TLS (Transport Layer Security) encrypts data between client and server."
+                    },
+                    {
+                        q: "How does ransomware most commonly spread?",
+                        opts: ["USB drops", "Phishing emails with malicious attachments", "Bluetooth pairing", "DNS poisoning"],
+                        correct: 1,
+                        explain: "Phishing emails with malicious attachments or links are the primary ransomware vector."
+                    },
+                    {
+                        q: "What is a honeypot in cybersecurity?",
+                        opts: ["An encrypted password store", "A decoy system to lure attackers", "An auto-patching tool", "A traffic blocker"],
+                        correct: 1,
+                        explain: "A honeypot is a decoy that attracts attackers so defenders can study their behavior."
+                    },
+                    {
+                        q: "What is the difference between a vulnerability and an exploit?",
+                        opts: ["They are the same thing", "A vulnerability is a weakness; an exploit is code that takes advantage of it", "An exploit is a weakness; a vulnerability is an attack", "Vulnerabilities only affect hardware"],
+                        correct: 1,
+                        explain: "A vulnerability is a flaw; an exploit is malicious code that leverages that flaw."
+                    },
+                    {
+                        q: "Which HTTP method is typically used to submit form data?",
+                        opts: ["GET", "POST", "PUT", "DELETE"],
+                        correct: 1,
+                        explain: "POST sends data to the server in the request body, commonly used for form submissions."
+                    },
+                    {
+                        q: "What is a zero-day vulnerability?",
+                        opts: ["A bug discovered exactly 0 days after release", "A vulnerability unknown to the vendor with no patch available", "A vulnerability that was patched the same day", "A bug that only appears on day 0 of testing"],
+                        correct: 1,
+                        explain: "A zero-day is an unpatched vulnerability unknown to the vendor, making it extremely dangerous."
+                    },
+                    {
+                        q: "What does the acronym IDS stand for?",
+                        opts: ["Intrusion Detection System", "Internet Data Security", "Internal Defense Standard", "Integrated Defense Service"],
+                        correct: 0,
+                        explain: "An Intrusion Detection System monitors network traffic for suspicious activity."
+                    },
+                    {
+                        q: "Which of the following is NOT a common social engineering technique?",
+                        opts: ["Pretexting", "Baiting", "Port scanning", "Tailgating"],
+                        correct: 2,
+                        explain: "Port scanning is a technical reconnaissance technique, not a social engineering method."
+                    }
+                ]
+            },
+            // ─── LEVEL 3 · ADVANCED ───────────────────────────
+            {
+                name: 'Level 3 · Advanced',
+                badgeClass: 'l3',
+                passThreshold: PASS_THRESHOLD_PER_LEVEL,
+                questions: [
+                    {
+                        q: "What is SQL injection?",
+                        opts: ["Injecting SQL queries via user input to manipulate a database", "A firewall configuration error", "A type of DDoS attack", "Encrypting database contents"],
+                        correct: 0,
+                        explain: "SQL injection occurs when an attacker inserts malicious SQL into input fields to manipulate the database."
+                    },
+                    {
+                        q: "Which HTTP status code indicates a server-side error?",
+                        opts: ["200", "301", "404", "500"],
+                        correct: 3,
+                        explain: "500 Internal Server Error indicates something went wrong on the server."
+                    },
+                    {
+                        q: "What is a Man-in-the-Middle (MitM) attack?",
+                        opts: ["An attacker intercepts communication between two parties", "A virus that deletes files", "A brute-force password attack", "A social engineering scam"],
+                        correct: 0,
+                        explain: "MitM attacks secretly relay and possibly alter communication between two parties."
+                    },
+                    {
+                        q: "What is the purpose of a vulnerability assessment?",
+                        opts: ["Exploit every weakness", "Identify, classify & prioritize security weaknesses", "Block all external traffic", "Install antivirus"],
+                        correct: 1,
+                        explain: "A vulnerability assessment systematically identifies and prioritizes security weaknesses for remediation."
+                    },
+                    {
+                        q: "What does 'defense in depth' mean?",
+                        opts: ["Using a single strong defense", "Multiple layers of security controls", "Only physical security", "One firewall is enough"],
+                        correct: 1,
+                        explain: "Defense in depth uses overlapping security layers so if one fails, others still protect."
+                    },
+                    {
+                        q: "What is a buffer overflow attack?",
+                        opts: ["Writing more data than a buffer can hold to overwrite adjacent memory", "Overloading the CPU with too many requests", "Flooding a DNS server with queries", "Overfilling a hard drive with logs"],
+                        correct: 0,
+                        explain: "Buffer overflow exploits occur when data exceeds a buffer's capacity, corrupting adjacent memory."
+                    },
+                    {
+                        q: "What does CSRF (Cross-Site Request Forgery) exploit?",
+                        opts: ["Server-side template injection", "Trust between a user's browser and a web application", "Weak encryption algorithms", "DNS misconfiguration"],
+                        correct: 1,
+                        explain: "CSRF tricks an authenticated user into executing unwanted actions on a web application they trust."
+                    },
+                    {
+                        q: "Which tool is commonly used for packet analysis?",
+                        opts: ["Nmap", "Wireshark", "Metasploit", "John the Ripper"],
+                        correct: 1,
+                        explain: "Wireshark captures and analyzes network packets in detail."
+                    },
+                    {
+                        q: "What is the primary difference between symmetric and asymmetric encryption?",
+                        opts: ["Symmetric uses one key; asymmetric uses a key pair (public + private)", "Asymmetric is faster", "Symmetric uses public keys only", "There is no difference"],
+                        correct: 0,
+                        explain: "Symmetric encryption uses one shared key; asymmetric uses a mathematically linked public/private key pair."
+                    },
+                    {
+                        q: "What does the OWASP Top 10 represent?",
+                        opts: ["Top 10 antivirus products", "The 10 most critical web application security risks", "Top 10 penetration testing tools", "The 10 strongest encryption algorithms"],
+                        correct: 1,
+                        explain: "The OWASP Top 10 is a standard awareness document listing the most critical web app security risks."
+                    }
+                ]
+            }
+        ];
+
+        let userName = '';
+        let currentLevel = 0;
+        let currentQIndex = 0;
+        let levelScore = 0;
+        let answered = false;
+        let levelDone = false;
+        let totalScore = 0;
+        let levelResults = [];
+        let quizFullyDone = false;
+
+        // DOM refs
+        const registerScreen  = document.getElementById('registerScreen');
+        const nameInput       = document.getElementById('nameInput');
+        const registerError   = document.getElementById('registerError');
+        const btnStart        = document.getElementById('btnStart');
+        const quizArea        = document.getElementById('quizArea');
+        const levelBadge      = document.getElementById('levelBadge');
+        const levelScoreBadge = document.getElementById('levelScoreBadge');
+        const progressFill    = document.getElementById('progressFill');
+        const progressLabel   = document.getElementById('progressLabel');
+        const questionArea    = document.getElementById('questionArea');
+        const qNumber         = document.getElementById('qNumber');
+        const qText           = document.getElementById('qText');
+        const optsContainer   = document.getElementById('optionsContainer');
+        const feedback        = document.getElementById('feedback');
+        const btnNext         = document.getElementById('btnNext');
+        const levelComplete   = document.getElementById('levelComplete');
+        const lcIcon          = document.getElementById('lcIcon');
+        const lcTitle         = document.getElementById('lcTitle');
+        const lcScore         = document.getElementById('lcScore');
+        const lcMsg           = document.getElementById('lcMsg');
+        const btnLevelNext    = document.getElementById('btnLevelNext');
+        const resultsArea     = document.getElementById('resultsArea');
+        const scoreCircle     = document.getElementById('scoreCircle');
+        const resultTitle     = document.getElementById('resultTitle');
+        const resultSub       = document.getElementById('resultSub');
+        const resultDetail    = document.getElementById('resultDetail');
+        const certificate     = document.getElementById('certificate');
+        const certName        = document.getElementById('certName');
+        const certScore       = document.getElementById('certScore');
+        const certDate        = document.getElementById('certDate');
+        const btnDownload     = document.getElementById('btnDownloadCert');
+        const btnBackRegister = document.getElementById('btnBackRegister');
+
+        const letters = ['A','B','C','D'];
+
+        // ─── REGISTRATION ──────────────────────────────────────
+        function validateAndStart() {
+            const raw = nameInput.value.trim();
+            if (!raw) { registerError.textContent = 'Please enter your name.'; nameInput.focus(); return; }
+            if (raw.length < 2) { registerError.textContent = 'Name must be at least 2 characters.'; nameInput.focus(); return; }
+            if (!/^[a-zA-ZÀ-ÿ\u00f1\u00d1][a-zA-ZÀ-ÿ\u00f1\u00d1\s.\-']{0,58}[a-zA-ZÀ-ÿ\u00f1\u00d1.\s]$/.test(raw)) {
+                registerError.textContent = 'Please enter a valid name.'; nameInput.focus(); return;
+            }
+            registerError.textContent = '';
+            userName = raw;
+            startQuiz();
+        }
+
+        nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); validateAndStart(); } });
+        btnStart.addEventListener('click', validateAndStart);
+
+        // ─── QUIZ LIFECYCLE ────────────────────────────────────
+        function startQuiz() {
+            registerScreen.style.display = 'none';
+            quizArea.style.display = 'block';
+            currentLevel = 0;
+            totalScore = 0;
+            levelResults = [];
+            quizFullyDone = false;
+            enterLevel(0);
+        }
+
+        function enterLevel(levelIndex) {
+            currentLevel = levelIndex;
+            currentQIndex = 0;
+            levelScore = 0;
+            answered = false;
+            levelDone = false;
+
+            const lvl = LEVELS[levelIndex];
+            levelBadge.textContent = `● ${lvl.name}`;
+            levelBadge.className = `level-badge ${lvl.badgeClass}`;
+            updateLevelScoreBadge();
+
+            questionArea.classList.remove('hide');
+            levelComplete.classList.remove('show');
+
+            showQuestion(0);
+        }
+
+        function updateLevelScoreBadge() {
+            levelScoreBadge.textContent = `Score: ${levelScore} / ${TOTAL_QS_PER_LEVEL}`;
+        }
+
+        function updateProgress() {
+            const pct = Math.round((currentQIndex / TOTAL_QS_PER_LEVEL) * 100);
+            progressFill.style.width = pct + '%';
+            progressLabel.textContent = `${currentQIndex} / ${TOTAL_QS_PER_LEVEL}`;
+        }
+
+        function showQuestion(index) {
+            const lvl = LEVELS[currentLevel];
+            const q = lvl.questions[index];
+            if (!q) return;
+
+            answered = false;
+            btnNext.classList.remove('show');
+            feedback.classList.remove('show','correct','wrong');
+            feedback.textContent = '';
+
+            qNumber.textContent = `QUESTION ${index + 1} OF ${TOTAL_QS_PER_LEVEL}`;
+            qText.textContent = q.q;
+            qText.classList.remove('fade-in');
+            void qText.offsetWidth;
+            qText.classList.add('fade-in');
+
+            optsContainer.innerHTML = '';
+            q.opts.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.dataset.index = i;
+                div.innerHTML = `<span class="letter">${letters[i]}</span><span>${opt}</span>`;
+                div.addEventListener('click', () => handleOptionClick(i));
+                optsContainer.appendChild(div);
+            });
+
+            updateProgress();
+            updateLevelScoreBadge();
+        }
+
+        function handleOptionClick(selectedIndex) {
+            if (answered || levelDone || quizFullyDone) return;
+
+            const lvl = LEVELS[currentLevel];
+            const q = lvl.questions[currentQIndex];
+            const options = optsContainer.querySelectorAll('.option');
+
+            options.forEach((el, i) => {
+                el.classList.add('disabled');
+                if (i === selectedIndex) el.classList.add('selected');
+            });
+
+            const isCorrect = selectedIndex === q.correct;
+            if (isCorrect) {
+                levelScore++;
+                updateLevelScoreBadge();
+            }
+
+            options[q.correct].classList.add('correct');
+            if (!isCorrect) {
+                options[selectedIndex].classList.add('wrong');
+                feedback.className = 'feedback show wrong';
+                feedback.textContent = `✘ ${q.explain}`;
+            } else {
+                feedback.className = 'feedback show correct';
+                feedback.textContent = `✔ ${q.explain}`;
+            }
+
+            answered = true;
+
+            if (currentQIndex < TOTAL_QS_PER_LEVEL - 1) {
+                btnNext.textContent = 'Next Question →';
+            } else {
+                btnNext.textContent = 'See Level Results 🎯';
+            }
+            btnNext.classList.add('show');
+        }
+
+        // ─── LEVEL COMPLETE ──────────────────────────────────
+        function showLevelComplete() {
+            levelDone = true;
+            questionArea.classList.add('hide');
+            levelComplete.classList.add('show');
+
+            const lvl = LEVELS[currentLevel];
+            const passed = levelScore >= lvl.passThreshold;
+
+            lcScore.textContent = `${levelScore} / ${TOTAL_QS_PER_LEVEL}`;
+            lcScore.className = `lc-score ${passed ? 'pass' : 'fail'}`;
+
+            if (passed) {
+                lcIcon.textContent = '✅';
+                lcTitle.textContent = 'Level Passed!';
+                lcMsg.textContent = `You scored ${levelScore}/${TOTAL_QS_PER_LEVEL}. Moving on!`;
+            } else {
+                lcIcon.textContent = '⚠️';
+                lcTitle.textContent = 'Below Pass Mark';
+                lcMsg.textContent = `You scored ${levelScore}/${TOTAL_QS_PER_LEVEL} (need ${lvl.passThreshold}). Continuing anyway.`;
+            }
+            btnLevelNext.textContent = currentLevel < LEVELS.length - 1 ? 'Next Level →' : 'See Final Results 🏁';
+        }
+
+        btnLevelNext.addEventListener('click', () => {
+            const lvl = LEVELS[currentLevel];
+            const passed = levelScore >= lvl.passThreshold;
+            levelResults.push({ score: levelScore, total: TOTAL_QS_PER_LEVEL, passed });
+            totalScore += levelScore;
+
+            if (currentLevel < LEVELS.length - 1) {
+                enterLevel(currentLevel + 1);
+            } else {
+                finishAllLevels();
+            }
+        });
+
+        // ─── NEXT BUTTON ──────────────────────────────────────
+        btnNext.addEventListener('click', () => {
+            if (currentQIndex < TOTAL_QS_PER_LEVEL - 1) {
+                currentQIndex++;
+                showQuestion(currentQIndex);
+            } else {
+                showLevelComplete();
+            }
+        });
+
+        // ─── FINAL RESULTS ────────────────────────────────────
+        function finishAllLevels() {
+            quizFullyDone = true;
+            quizArea.style.display = 'none';
+            resultsArea.classList.add('show');
+
+            const totalPossible = LEVELS.length * TOTAL_QS_PER_LEVEL;
+            const pct = Math.round((totalScore / totalPossible) * 100);
+            const allPassed = levelResults.every(r => r.passed);
+
+            scoreCircle.textContent = pct + '%';
+            scoreCircle.className = `score-circle ${allPassed ? 'pass' : ''}`;
+
+            resultTitle.textContent = allPassed ? '🎉 Triple Threat!' : 'Keep Practicing!';
+            resultSub.textContent = allPassed
+                ? `You passed all 3 levels with ${totalScore}/${totalPossible}`
+                : `You scored ${totalScore}/${totalPossible} overall`;
+            resultDetail.textContent = allPassed
+                ? 'Outstanding cybersecurity knowledge across beginner, intermediate, and advanced topics.'
+                : `You need to pass all 3 levels (${PASS_THRESHOLD_PER_LEVEL}/10 each) to earn the certificate. Click "Back to Registration" to try again.`;
+
+            if (allPassed) {
+                const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                certName.textContent = userName;
+                certDate.textContent = dateStr;
+                certScore.textContent = `${totalScore}/${totalPossible} (${pct}%)`;
+                certificate.classList.add('show');
+            } else {
+                certificate.classList.remove('show');
+            }
+        }
+
+        // ─── BACK TO REGISTRATION ──────────────────────────────
+        btnBackRegister.addEventListener('click', resetAll);
+
+        function resetAll() {
+            currentLevel = 0;
+            currentQIndex = 0;
+            levelScore = 0;
+            answered = false;
+            levelDone = false;
+            totalScore = 0;
+            levelResults = [];
+            quizFullyDone = false;
+            userName = '';
+
+            resultsArea.classList.remove('show');
+            certificate.classList.remove('show');
+            questionArea.classList.remove('hide');
+            levelComplete.classList.remove('show');
+            quizArea.style.display = 'none';
+            registerScreen.style.display = 'block';
+            nameInput.value = '';
+            registerError.textContent = '';
+            nameInput.focus();
+        }
+
+        // ─── DOWNLOAD CERTIFICATE ─────────────────────────────
+        btnDownload.addEventListener('click', () => {
+            const name = userName || 'Cybersecurity Professional';
+            const date = certDate.textContent;
+            const scoreText = certScore.textContent;
+
+            const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+            const svgContent = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+                <defs>
+                    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#f5f0e8"/>
+                        <stop offset="100%" stop-color="#e8e0d0"/>
+                    </linearGradient>
+                </defs>
+                <rect width="800" height="600" rx="20" fill="url(#bg)"/>
+                <rect x="15" y="15" width="770" height="570" rx="14" fill="none" stroke="#c9a84c" stroke-width="4"/>
+                <rect x="25" y="25" width="750" height="550" rx="10" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+
+                <text x="400" y="110" text-anchor="middle" font-size="64">🏆</text>
+                <text x="400" y="170" text-anchor="middle" font-family="sans-serif" font-size="20" font-weight="700" letter-spacing="4" fill="#8a7a5a">CERTIFICATE OF ACHIEVEMENT</text>
+                <text x="400" y="240" text-anchor="middle" font-family="Georgia,serif" font-size="36" font-weight="700" fill="#1a1a2e">${esc(name)}</text>
+                <text x="400" y="300" text-anchor="middle" font-family="sans-serif" font-size="17" fill="#5a4a3a">
+                    Demonstrated cybersecurity excellence across all 3 levels,
+                </text>
+                <text x="400" y="330" text-anchor="middle" font-family="sans-serif" font-size="17" fill="#5a4a3a">
+                    scoring ${esc(scoreText)} on the Cybersecurity IQ Test.
+                </text>
+
+                <line x1="150" y1="420" x2="650" y2="420" stroke="#d0c0a0" stroke-width="1"/>
+                <text x="200" y="460" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#7a6a5a">Issued: <tspan font-weight="700" fill="#3a3a1a">${esc(date)}</tspan></text>
+                <text x="600" y="460" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#7a6a5a">🛡️ CYCOM,AFP</text>
+            </svg>`;
+
+            const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const safeName = name.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'');
+            a.download = `Cybersecurity_IQ_Certificate_${safeName}.svg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        nameInput.focus();
+    })();
+</script>
+
+</body>
+</html>
